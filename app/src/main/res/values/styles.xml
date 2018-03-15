@@ -1,0 +1,24 @@
+<resources>
+
+    <style name="AppTheme" parent="@android:style/Theme.DeviceDefault.Light">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/text_color</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColorPrimary">@color/text_color</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:textColorSecondary">@color/text_color</item>
+        <item name="android:editTextColor">@color/text_color</item>
+    </style>
+    <style name="AppTheme.NotitleBar" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/text_color</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textColorPrimary">@color/text_color</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:textColorSecondary">@color/text_color</item>
+        <item name="android:editTextColor">@color/text_color</item>
+    </style>
+
+</resources>
