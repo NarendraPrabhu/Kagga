@@ -7,7 +7,7 @@
             android:layout_height="wrap_content">
     <RadioButton
         android:layout_width="0dp"
-        android:textSize="16sp"
+        android:textSize="13sp"
         android:layout_weight="0.5"
         android:checked="true"
         android:drawablePadding="10dp"
@@ -18,7 +18,7 @@
     <RadioButton
         android:layout_width="0dp"
         android:layout_weight="0.5"
-        android:textSize="16sp"
+        android:textSize="13sp"
         android:drawablePadding="10dp"
         android:id="@+id/check_marulamuniya"
         android:textStyle="bold"
