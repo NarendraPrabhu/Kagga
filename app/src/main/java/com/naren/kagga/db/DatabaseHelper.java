@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 
+import com.naren.kagga.R;
+
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -31,6 +33,7 @@ public class DatabaseHelper {
     public static final String COLUMN_WORD_MEANINGS = "meanings";
     public static final String COLUMN_EXPLANATION = "explanation";
     public static final String COLUMN_FAVORITE = "favorite";
+    public static final String COLUMN_TYPE = "type";
 
     public static boolean copyFile(Context context){
         boolean value = false;
@@ -82,16 +85,33 @@ public class DatabaseHelper {
         return db;
     }
 
-    public static Cursor searchKaggas(Context context, String value){
+    public static Cursor searchKaggas(Context context, String value, String... types){
         String selection = null;
-        if(!TextUtils.isEmpty(value)){
-            selection = COLUMN_KAGGA+" LIKE '%"+value+"%'";
+        String type = COLUMN_TYPE+" in (%s)";
+        String typeValue = "";
+        if(types != null && types.length > 0){
+            typeValue = "'"+types[0]+"'";
+            if(types.length > 1){
+                typeValue += ", '"+types[1]+"'";
+            }
         }
+
+        if(TextUtils.isEmpty(typeValue)){
+            typeValue = String.format("'%s', '%s'", context.getString(R.string.title_mankutimmana_kagga), context.getString(R.string.title_marulamuniyana_kagga));
+        }
+        type = String.format(type, typeValue);
+
+        if(!TextUtils.isEmpty(value)){
+            selection = COLUMN_KAGGA+" LIKE '%"+value+"%' AND "+type;
+        }else{
+            selection = type;
+        }
+
         SQLiteDatabase db = getDB(context);
         if(db == null){
             return null;
         }
-        return db.query(TABLE_KAGGA, new String[]{COLUMN_ID, COLUMN_KAGGA, COLUMN_DIVIDED_WORDS, COLUMN_WORD_MEANINGS, COLUMN_EXPLANATION, COLUMN_FAVORITE}, selection, null, null, null, COLUMN_KAGGA);
+        return db.query(TABLE_KAGGA, new String[]{COLUMN_ID, COLUMN_KAGGA, COLUMN_DIVIDED_WORDS, COLUMN_WORD_MEANINGS, COLUMN_EXPLANATION, COLUMN_FAVORITE, COLUMN_TYPE}, selection, null, null, null, COLUMN_TYPE+", "+COLUMN_KAGGA);
     }
 
 }

@@ -14,6 +14,7 @@ import android.widget.CursorAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -25,24 +26,48 @@ import com.naren.kagga.db.DatabaseHelper;
 public class MainActivity extends ListActivity {
 
     private final KaggaAdapter mAdapter = new KaggaAdapter();
+    private boolean isMankutimmaSelected = true;
+    private SearchView mSearchView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getListView().addHeaderView(getListViewHeader());
         setListAdapter(mAdapter);
-        Cursor cursor = mAdapter.getCursor("");
-        mAdapter.swapCursor(cursor);
+        refresh("");
     }
 
+    private View getListViewHeader(){
+        View v = getLayoutInflater().inflate(R.layout.list_header, null);
+        ((RadioGroup)v).setOnCheckedChangeListener(onCheckedChangeListener);
+        return v;
+    }
+
+    private RadioGroup.OnCheckedChangeListener onCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup radioGroup, int i) {
+            isMankutimmaSelected = (i == R.id.check_mankutimma);
+            String search = "";
+            if(mSearchView != null && mSearchView.isShown()){
+                search = mSearchView.getQuery().toString();
+            }
+            refresh(search);
+        }
+    };
+
+    private void refresh(String query){
+        Cursor cursor = mAdapter.getCursor(query);
+        mAdapter.swapCursor(cursor);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        searchView.setOnQueryTextListener(mAdapter);
-        searchView.setQueryHint(getString(R.string.search_hint_kagga));
+        mSearchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        mSearchView.setOnQueryTextListener(mAdapter);
+        mSearchView.setQueryHint(getString(R.string.search_hint_kagga));
         return true;
     }
 
@@ -79,7 +104,8 @@ public class MainActivity extends ListActivity {
         }
 
         private Cursor getCursor(String query){
-            return DatabaseHelper.searchKaggas(MainActivity.this, query);
+            String value = getString(isMankutimmaSelected ? R.string.title_mankutimmana_kagga : R.string.title_marulamuniyana_kagga);
+            return DatabaseHelper.searchKaggas(MainActivity.this, query, value);
         }
 
         @Override
@@ -95,8 +121,10 @@ public class MainActivity extends ListActivity {
             String wordMeanings = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_WORD_MEANINGS));
             String explanation = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_EXPLANATION));
             int isFavorite = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_FAVORITE));
-            Kagga k = new Kagga(kagga, dividedWords, wordMeanings, explanation, isFavorite == 1);
+            String type = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TYPE));
+            Kagga k = new Kagga(kagga, dividedWords, wordMeanings, explanation, isFavorite == 1, type);
             ((TextView)view.findViewById(R.id.kagga)).setText(k.getKagga());
+            ((TextView)view.findViewById(R.id.kagga_type)).setText(k.getType());
             view.setTag(k);
         }
 
@@ -108,7 +136,7 @@ public class MainActivity extends ListActivity {
         @Override
         public boolean onQueryTextChange(String s) {
             if(android.text.TextUtils.isEmpty(s)){
-                Cursor cursor = DatabaseHelper.searchKaggas(MainActivity.this, "");
+                Cursor cursor = getCursor("");
                 swapCursor(cursor);
             }else {
                 getFilter().filter(s);
@@ -123,7 +151,7 @@ public class MainActivity extends ListActivity {
                 @SuppressWarnings("unchecked")
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
-                    Cursor cursor = DatabaseHelper.searchKaggas(MainActivity.this, constraint.toString());
+                    Cursor cursor = getCursor(constraint.toString());
                     swapCursor(cursor);
                 }
 

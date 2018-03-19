@@ -10,13 +10,15 @@ public class Kagga implements Parcelable{
 	private String wordMeanings;
 	private String explanation;
 	private boolean isFavorite;
+	private String type;
 	
-	public Kagga(String kagga, String dividedWords, String wordMeanings, String explanation, boolean isFavorite) {
+	public Kagga(String kagga, String dividedWords, String wordMeanings, String explanation, boolean isFavorite, String type) {
 		this.kagga = kagga;
 		this.dividedWords = dividedWords;
 		this.wordMeanings = wordMeanings;
 		this.explanation = explanation;
 		this.isFavorite = isFavorite;
+		this.type = type;
 	}
 	
 	public String getKagga() {
@@ -39,9 +41,13 @@ public class Kagga implements Parcelable{
 		return isFavorite;
 	}
 
+	public String getType() {
+		return type;
+	}
+
 	@Override
 	public String toString() {
-		return kagga+" : "+ dividedWords+" : "+wordMeanings;
+		return kagga+" : "+ dividedWords+" : "+wordMeanings+" : "+type;
 	}
 
 	@Override
@@ -51,6 +57,7 @@ public class Kagga implements Parcelable{
 		parcel.writeString(wordMeanings);
 		parcel.writeString(explanation);
 		parcel.writeInt(isFavorite ? 1 : 0);
+		parcel.writeString(type);
 	}
 
 	@Override
@@ -61,7 +68,7 @@ public class Kagga implements Parcelable{
 	public static Creator<Kagga> CREATOR = new Creator<Kagga>() {
 		@Override
 		public Kagga createFromParcel(Parcel parcel) {
-			return new Kagga(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt()==1);
+			return new Kagga(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt()==1, parcel.readString());
 		}
 
 		@Override

@@ -19,6 +19,13 @@
         android:minHeight="50dp"
         android:padding="10dp"
         android:layout_height="wrap_content"/>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:id="@+id/kagga_type"
+        android:textSize="12sp"
+        android:layout_below="@id/kagga"
+        android:gravity="center_vertical|right|end"
+        android:padding="10dp"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

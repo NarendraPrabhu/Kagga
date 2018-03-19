@@ -51,7 +51,7 @@ public class KaggaFragment extends DialogFragment{
     public void onResume() {
         super.onResume();
         if(getView() != null){
-            String title = isKagga ? getString(R.string.title_details) : getString(R.string.title_info);
+            String title = isKagga ? mKagga.getType() : getString(R.string.title_info);
             getView().findViewById(R.id.detail_tools).setVisibility(isKagga ? View.VISIBLE : View.GONE);
             if(isKagga) {
                 getView().findViewById(R.id.detail_tools_copy).setOnClickListener(onClickListener);
