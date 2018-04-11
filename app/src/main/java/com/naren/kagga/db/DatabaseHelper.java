@@ -26,7 +26,7 @@ public class DatabaseHelper {
 
     private static final int version = 1;
     private static final String DB_NAME = "1.vc";
-    private static final String TABLE_KAGGA = "Kagga";
+    public static final String TABLE_KAGGA = "Kagga";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_KAGGA = "kagga";
     public static final String COLUMN_DIVIDED_WORDS = "divided_words";

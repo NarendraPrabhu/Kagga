@@ -1,15 +1,31 @@
 package com.naren.kagga.data;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.naren.kagga.db.DatabaseHelper;
+
+@Entity(tableName = DatabaseHelper.TABLE_KAGGA)
 public class Kagga implements Parcelable{
 
+	@ColumnInfo(name = DatabaseHelper.COLUMN_KAGGA)
 	private String kagga;
+
+	@ColumnInfo(name = DatabaseHelper.COLUMN_DIVIDED_WORDS)
 	private String dividedWords;
+
+	@ColumnInfo(name = DatabaseHelper.COLUMN_WORD_MEANINGS)
 	private String wordMeanings;
+
+	@ColumnInfo(name = DatabaseHelper.COLUMN_EXPLANATION)
 	private String explanation;
+
+	@ColumnInfo(name = DatabaseHelper.COLUMN_FAVORITE)
 	private boolean isFavorite;
+
+	@ColumnInfo(name = DatabaseHelper.COLUMN_TYPE)
 	private String type;
 	
 	public Kagga(String kagga, String dividedWords, String wordMeanings, String explanation, boolean isFavorite, String type) {
