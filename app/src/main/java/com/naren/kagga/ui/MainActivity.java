@@ -22,10 +22,11 @@ import com.naren.kagga.R;
 import com.naren.kagga.TextUtils;
 import com.naren.kagga.data.Kagga;
 import com.naren.kagga.db.DatabaseHelper;
+import com.naren.kagga.ui.adapters.KaggaAdapter;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements KaggaFragment.OnKaggaViewCompleteListener{
 
-    private final KaggaAdapter mAdapter = new KaggaAdapter();
+    private KaggaAdapter mAdapter = null;
     private boolean isMankutimmaSelected = true;
     private SearchView mSearchView = null;
 
@@ -33,9 +34,15 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAdapter = new KaggaAdapter(this);
         getListView().addHeaderView(getListViewHeader());
         setListAdapter(mAdapter);
-        refresh("");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh();
     }
 
     private View getListViewHeader(){
@@ -48,16 +55,17 @@ public class MainActivity extends ListActivity {
         @Override
         public void onCheckedChanged(RadioGroup radioGroup, int i) {
             isMankutimmaSelected = (i == R.id.check_mankutimma);
-            String search = "";
-            if(mSearchView != null && mSearchView.isShown()){
-                search = mSearchView.getQuery().toString();
-            }
-            refresh(search);
+            mAdapter.setMankutimmaSelected(isMankutimmaSelected);
+            refresh();
         }
     };
 
-    private void refresh(String query){
-        Cursor cursor = mAdapter.getCursor(query);
+    private void refresh(){
+        String search = "";
+        if(mSearchView != null && mSearchView.isShown()){
+            search = mSearchView.getQuery().toString();
+        }
+        Cursor cursor = mAdapter.getCursor(search);
         mAdapter.swapCursor(cursor);
     }
 
@@ -80,9 +88,9 @@ public class MainActivity extends ListActivity {
             b.putParcelable(KaggaFragment.EXTRA_KAGGA, k);
             KaggaFragment kf = new KaggaFragment();
             kf.setArguments(b);
+            kf.setViewCompleteListener(this);
             kf.show(getFragmentManager(), "Kagga");
         }
-
     }
 
     @Override
@@ -94,78 +102,19 @@ public class MainActivity extends ListActivity {
             kf.setArguments(b);
             kf.show(getFragmentManager(), "Info");
         }
+        if(item.getItemId() == R.id.menu_favorite){
+            boolean isChecked = item.isChecked();
+            isChecked = !isChecked;
+            item.setChecked(isChecked);
+            mAdapter.setFavorite(isChecked);
+            refresh();
+            item.setIcon(isChecked ? R.drawable.favorite_selected : R.drawable.favorite_normal);
+        }
         return super.onOptionsItemSelected(item);
     }
 
-    private class KaggaAdapter extends CursorAdapter implements SearchView.OnQueryTextListener, Filterable {
-
-        public KaggaAdapter() {
-            super(MainActivity.this, null, false);
-        }
-
-        private Cursor getCursor(String query){
-            String value = getString(isMankutimmaSelected ? R.string.title_mankutimmana_kagga : R.string.title_marulamuniyana_kagga);
-            return DatabaseHelper.searchKaggas(MainActivity.this, query, value);
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-            View v = getLayoutInflater().inflate(R.layout.item_kagga, null);
-            return v;
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            String kagga = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_KAGGA));
-            String dividedWords = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DIVIDED_WORDS));
-            String wordMeanings = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_WORD_MEANINGS));
-            String explanation = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_EXPLANATION));
-            int isFavorite = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_FAVORITE));
-            String type = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TYPE));
-            Kagga k = new Kagga(kagga, dividedWords, wordMeanings, explanation, isFavorite == 1, type);
-            ((TextView)view.findViewById(R.id.kagga)).setText(k.getKagga());
-            ((TextView)view.findViewById(R.id.kagga_type)).setText(k.getType());
-            view.setTag(k);
-        }
-
-        @Override
-        public boolean onQueryTextSubmit(String s) {
-            return true;
-        }
-
-        @Override
-        public boolean onQueryTextChange(String s) {
-            if(android.text.TextUtils.isEmpty(s)){
-                Cursor cursor = getCursor("");
-                swapCursor(cursor);
-            }else {
-                getFilter().filter(s);
-            }
-            return true;
-        }
-
-        @Override
-        public Filter getFilter() {
-            return new Filter() {
-
-                @SuppressWarnings("unchecked")
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-                    Cursor cursor = getCursor(constraint.toString());
-                    swapCursor(cursor);
-                }
-
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    return new FilterResults();
-                }
-            };
-        }
+    @Override
+    public void done(Kagga kagga) {
+        refresh();
     }
-
-    private Spanned getInfoProfile(){
-        String text = getString(R.string.info_profile);
-        return TextUtils.getText(text);
-    }
-    
 }

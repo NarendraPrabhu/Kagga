@@ -27,5 +27,18 @@
         android:gravity="center_vertical|right|end"
         android:padding="10dp"
         android:layout_height="wrap_content"/>
+    <CheckedTextView
+        android:layout_width="15dp"
+        android:minHeight="15dp"
+        android:focusable="false"
+        android:layout_margin="5dp"
+        android:minWidth="15dp"
+        android:clickable="false"
+        android:background="@drawable/selector_favorite"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/kagga_favorite"
+        android:layout_height="15dp" />
 
 </RelativeLayout>

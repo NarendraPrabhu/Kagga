@@ -1,5 +1,6 @@
 package com.naren.kagga.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -10,6 +11,7 @@ import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 
 import com.naren.kagga.R;
+import com.naren.kagga.data.Kagga;
 
 import org.apache.commons.io.IOUtils;
 
@@ -85,7 +87,7 @@ public class DatabaseHelper {
         return db;
     }
 
-    public static Cursor searchKaggas(Context context, String value, String... types){
+    public static Cursor searchKaggas(Context context, boolean favorite, String value, String... types){
         String selection = null;
         String type = COLUMN_TYPE+" in (%s)";
         String typeValue = "";
@@ -107,11 +109,26 @@ public class DatabaseHelper {
             selection = type;
         }
 
+        if(favorite) {
+            if (TextUtils.isEmpty(selection)) {
+                selection = "";
+            } else {
+                selection += " AND ";
+            }
+            selection += COLUMN_FAVORITE+" = "+(favorite ? 1 : 0);
+        }
+
         SQLiteDatabase db = getDB(context);
         if(db == null){
             return null;
         }
         return db.query(TABLE_KAGGA, new String[]{COLUMN_ID, COLUMN_KAGGA, COLUMN_DIVIDED_WORDS, COLUMN_WORD_MEANINGS, COLUMN_EXPLANATION, COLUMN_FAVORITE, COLUMN_TYPE}, selection, null, null, null, COLUMN_TYPE+", "+COLUMN_KAGGA);
+    }
+
+    public static boolean setFavorite(Context context, Kagga kagga, boolean favorite){
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_FAVORITE, favorite ? 1 : 0);
+        return (getDB(context).update(TABLE_KAGGA, cv, COLUMN_KAGGA+" LIKE '%"+kagga.getKagga()+"%'", null) > 0);
     }
 
 }
