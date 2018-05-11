@@ -1,30 +1,22 @@
 package com.naren.kagga.ui;
 
 import android.app.ListActivity;
-import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CursorAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.naren.kagga.R;
-import com.naren.kagga.TextUtils;
 import com.naren.kagga.data.Kagga;
-import com.naren.kagga.db.DatabaseHelper;
 import com.naren.kagga.ui.adapters.KaggaAdapter;
 
-public class MainActivity extends ListActivity implements KaggaFragment.OnKaggaViewCompleteListener{
+public class MainActivity extends ListActivity{
 
     private KaggaAdapter mAdapter = null;
     private boolean isMankutimmaSelected = true;
@@ -83,24 +75,14 @@ public class MainActivity extends ListActivity implements KaggaFragment.OnKaggaV
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Kagga k = (Kagga)v.getTag();
         if(k != null){
-            Bundle b = new Bundle();
-            b.putBoolean(KaggaFragment.EXTRA_IS_KAGGA, true);
-            b.putParcelable(KaggaFragment.EXTRA_KAGGA, k);
-            KaggaFragment kf = new KaggaFragment();
-            kf.setArguments(b);
-            kf.setViewCompleteListener(this);
-            kf.show(getFragmentManager(), "Kagga");
+            startDetail(k);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_info){
-            Bundle b = new Bundle();
-            b.putBoolean(KaggaFragment.EXTRA_IS_KAGGA, false);
-            KaggaFragment kf = new KaggaFragment();
-            kf.setArguments(b);
-            kf.show(getFragmentManager(), "Info");
+           startDetail(null);
         }
         if(item.getItemId() == R.id.menu_favorite){
             boolean isChecked = item.isChecked();
@@ -113,8 +95,10 @@ public class MainActivity extends ListActivity implements KaggaFragment.OnKaggaV
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void done(Kagga kagga) {
-        refresh();
+    private void startDetail(Kagga kagga){
+        Intent intent = new Intent(this, KaggaDetailsActivity.class);
+        intent.putExtra(KaggaDetailsActivity.EXTRA_KAGGA, kagga);
+        startActivity(intent);
     }
+
 }

@@ -7,7 +7,7 @@ android {
         applicationId "com.naren.kagga"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 5
+        versionCode 7
         versionName "1.0.0.1"
     }
     buildTypes {
@@ -16,15 +16,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding{
+        enabled = true
+    }
 }
 
 dependencies {
-    compile 'commons-io:commons-io:2.4'
-    compile 'org.apache.commons:commons-lang3:3.6'
-    compile('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+    implementation 'commons-io:commons-io:2.4'
+    implementation 'org.apache.commons:commons-lang3:3.6'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
         transitive = true
     }
-    compile 'com.google.firebase:firebase-core:11.8.0'
+    implementation 'com.google.firebase:firebase-core:11.8.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

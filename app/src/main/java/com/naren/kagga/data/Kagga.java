@@ -41,13 +41,17 @@ public class Kagga implements Parcelable{
 		return isFavorite;
 	}
 
+	public void setIsFavorite(boolean favorite) {
+		isFavorite = favorite;
+	}
+
 	public String getType() {
 		return type;
 	}
 
 	@Override
 	public String toString() {
-		return kagga+" : "+ dividedWords+" : "+wordMeanings+" : "+type;
+		return type+" \n\n "+kagga+" \n\n "+ dividedWords+" \n\n "+wordMeanings;
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class Kagga implements Parcelable{
 		return 0;
 	}
 
-	public static Creator<Kagga> CREATOR = new Creator<Kagga>() {
+	public static final Parcelable.Creator<Kagga> CREATOR = new Parcelable.Creator<Kagga>() {
 		@Override
 		public Kagga createFromParcel(Parcel parcel) {
 			return new Kagga(parcel.readString(), parcel.readString(), parcel.readString(), parcel.readString(), parcel.readInt()==1, parcel.readString());

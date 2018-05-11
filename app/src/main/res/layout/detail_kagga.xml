@@ -1,67 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<layout  xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="kagga"
+            type="com.naren.kagga.data.Kagga"/>
+        <variable
+            name="events"
+            type="com.naren.kagga.ui.listeners.KaggaDetailEventListener"/>
+        <import type="com.naren.kagga.TextUtils"/>
+        <import type="android.view.View"/>
+    </data>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/detail_tools"
-        android:layout_height="wrap_content">
-        <ImageButton
-            android:layout_width="35dp"
-            android:src="@drawable/share"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:adjustViewBounds="true"
-            android:layout_marginStart="3dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
-            android:background="@android:drawable/menuitem_background"
-            android:layout_centerVertical="true"
-            android:id="@+id/detail_tools_share"
-            android:layout_height="35dp"/>
-        <ImageButton
-            android:layout_width="35dp"
-            android:src="@drawable/copy"
-            android:adjustViewBounds="true"
-            android:layout_toStartOf="@id/detail_tools_share"
-            android:background="@android:drawable/menuitem_background"
-            android:layout_toLeftOf="@id/detail_tools_share"
-            android:layout_margin="3dp"
-            android:layout_centerVertical="true"
-            android:id="@+id/detail_tools_copy"
-            android:layout_height="35dp"/>
-        <CheckBox
-            android:layout_width="35dp"
-            android:button="@drawable/selector_favorite"
-            android:adjustViewBounds="true"
-            android:layout_toStartOf="@id/detail_tools_copy"
-            android:background="@android:drawable/menuitem_background"
-            android:layout_toLeftOf="@id/detail_tools_copy"
-            android:layout_margin="3dp"
-            android:layout_centerVertical="true"
-            android:id="@+id/detail_tools_favorite"
-            android:layout_height="35dp" />
-    </RelativeLayout>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_above="@id/detail_tools"
-        android:scrollbars="vertical"
-        android:padding="20dp"
         android:layout_height="match_parent">
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:gravity="center"
-            android:padding="2dp"
-            android:textSize="18sp"
-            android:lineSpacingExtra="3dp"
-            android:id="@+id/detail_kagga"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/detail_tools"
+            android:visibility="@{kagga != null ? View.VISIBLE : View.GONE}"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:layout_width="35dp"
+                android:src="@drawable/share"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:adjustViewBounds="true"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:onClick="@{(v)->events.share(kagga)}"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:background="@android:drawable/menuitem_background"
+                android:layout_centerVertical="true"
+                android:id="@+id/detail_tools_share"
+                android:layout_height="35dp"/>
+            <ImageButton
+                android:layout_width="35dp"
+                android:src="@drawable/copy"
+                android:adjustViewBounds="true"
+                android:layout_toStartOf="@id/detail_tools_share"
+                android:background="@android:drawable/menuitem_background"
+                android:layout_toLeftOf="@id/detail_tools_share"
+                android:layout_margin="3dp"
+                android:onClick="@{(v)->events.copy(kagga)}"
+                android:layout_centerVertical="true"
+                android:id="@+id/detail_tools_copy"
+                android:layout_height="35dp"/>
+            <CheckBox
+                android:layout_width="35dp"
+                android:button="@drawable/selector_favorite"
+                android:adjustViewBounds="true"
+                android:layout_toStartOf="@id/detail_tools_copy"
+                android:background="@android:drawable/menuitem_background"
+                android:layout_toLeftOf="@id/detail_tools_copy"
+                android:layout_margin="3dp"
+                android:checked="@={kagga.isFavorite}"
+                android:onCheckedChanged="@{(v,b)->events.check(kagga, b)}"
+                android:layout_centerVertical="true"
+                android:id="@+id/detail_tools_favorite"
+                android:layout_height="35dp" />
+        </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_above="@id/detail_tools"
+            android:scrollbars="vertical"
+            android:padding="20dp"
             android:layout_height="match_parent">
-            <requestFocus/>
-        </TextView>
-    </ScrollView>
+            <TextView
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:padding="2dp"
+                android:textSize="18sp"
+                android:text="@{TextUtils.getText(kagga != null ? String.format(@string/detail_text, kagga.getKagga(), kagga.getDividedWords(), kagga.getWordMeanings(), kagga.getExplanation()) : @string/info_profile)}"
+                android:lineSpacingExtra="3dp"
+                android:id="@+id/detail_kagga"
+                android:layout_height="match_parent">
+                <requestFocus/>
+            </TextView>
+        </ScrollView>
 
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

@@ -3,6 +3,7 @@ package com.naren.kagga.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.naren.kagga.R;
 import com.naren.kagga.data.Kagga;
+import com.naren.kagga.databinding.ItemKaggaBinding;
 import com.naren.kagga.db.DatabaseHelper;
 
 public class KaggaAdapter extends CursorAdapter implements SearchView.OnQueryTextListener, Filterable {
@@ -42,8 +44,8 @@ public class KaggaAdapter extends CursorAdapter implements SearchView.OnQueryTex
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        View v = mActivity.getLayoutInflater().inflate(R.layout.item_kagga, null);
-        return v;
+        ItemKaggaBinding binding = ItemKaggaBinding.inflate(mActivity.getLayoutInflater());
+        return binding.getRoot();
     }
 
     @Override
@@ -55,10 +57,8 @@ public class KaggaAdapter extends CursorAdapter implements SearchView.OnQueryTex
         int isFavorite = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_FAVORITE));
         String type = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TYPE));
         Kagga k = new Kagga(kagga, dividedWords, wordMeanings, explanation, isFavorite == 1, type);
-        ((TextView)view.findViewById(R.id.kagga)).setText(k.getKagga());
-        ((TextView)view.findViewById(R.id.kagga_type)).setText(k.getType());
-        ((CheckedTextView)view.findViewById(R.id.kagga_favorite)).setChecked(isFavorite == 1);
-        view.setTag(k);
+        ItemKaggaBinding binding = DataBindingUtil.getBinding(view);
+        binding.setKagga(k);
     }
 
     @Override
