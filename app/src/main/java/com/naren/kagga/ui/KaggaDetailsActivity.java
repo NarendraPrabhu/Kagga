@@ -1,22 +1,24 @@
 package com.naren.kagga.ui;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.KeyEvent;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.naren.kagga.R;
 import com.naren.kagga.data.Kagga;
-import com.naren.kagga.databinding.DetailKaggaBinding;
+import com.naren.kagga.databinding.DetailLayoutBinding;
+import com.naren.kagga.databinding.DetailsBinding;
 import com.naren.kagga.db.DatabaseHelper;
 import com.naren.kagga.ui.listeners.KaggaDetailEventListener;
 
@@ -26,67 +28,137 @@ import java.util.List;
  * Created by narensmac on 26/02/18.
  */
 
-public class KaggaDetailsActivity extends Activity implements KaggaDetailEventListener{
+public class KaggaDetailsActivity extends BaseActivity implements KaggaDetailEventListener, ViewPager.OnPageChangeListener{
 
-    public static final String EXTRA_KAGGA = "kagga";
-    private DetailKaggaBinding binding = null;
+    public static final String EXTRA_PARAM_IS_FAVORITE = "IS_FAVORITE";
+    public static final String EXTRA_PARAM_IS_MANKUTIMMANA_KAGGA = "IS_MANKUTIMMA";
+    public static final String EXTRA_PARAM_QUERY = "QUERY";
+    public static final String EXTRA_PARAM_CURSOR_POSITION = "CURSOR_POSITION";
 
+    private DetailLayoutBinding binding = null;
+    private Cursor mCursor = null;
+    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
-        Kagga kagga = getIntent().getParcelableExtra(EXTRA_KAGGA);
-        binding = DetailKaggaBinding.inflate(getLayoutInflater());
+        binding = DetailLayoutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        binding.setKagga(kagga);
+
+        final int currentPosition = getIntent().getIntExtra(EXTRA_PARAM_CURSOR_POSITION, 0);
+        final boolean isFavorite = getIntent().getBooleanExtra(EXTRA_PARAM_IS_FAVORITE, false);
+        final boolean isMankutimmanaKagga = getIntent().getBooleanExtra(EXTRA_PARAM_IS_MANKUTIMMANA_KAGGA, false);
+        final String query = getIntent().getStringExtra(EXTRA_PARAM_QUERY);
+        String value = getString(isMankutimmanaKagga ? R.string.title_mankutimmana_kagga : R.string.title_marulamuniyana_kagga);
+
+        setTitle(value);
+
+        KaggaDetailsAdapter adapter = new KaggaDetailsAdapter();
+        binding.setAdapter(adapter);
         binding.setEvents(this);
-        String title = (kagga != null) ? kagga.getType() : getString(R.string.title_info);
-        if(!android.text.TextUtils.isEmpty(title)) {
-            setTitle(title);
-        }
+
+        final ViewPager pager = findViewById(R.id.kagga_details_pager);
+        pager.post(new Runnable() {
+            @Override
+            public void run() {
+                pager.setCurrentItem(currentPosition, true);
+            }
+        });
+        PageIndicatorView indicator = findViewById(R.id.indicator);
+        pager.addOnPageChangeListener(indicator);
+        pager.addOnPageChangeListener(this);
+        mCursor = DatabaseHelper.searchKaggas(this, isFavorite, query, value);
     }
 
     @Override
     public void check(Kagga kagga, boolean b) {
-        DatabaseHelper.setFavorite(this, kagga, b);
+        if(kagga != null) {
+            DatabaseHelper.setFavorite(this, kagga, b);
+        }
     }
 
     @Override
     public void copy(Kagga kagga) {
-        ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Kagga", kagga.toString());
-        clipboard.setPrimaryClip(clip);
-        Toast.makeText(this, R.string.warning_kagga_copied, Toast.LENGTH_SHORT).show();
+        if(kagga != null) {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Kagga", kagga.toString());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this, R.string.warning_kagga_copied, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void share(Kagga kagga) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/*");
-        intent.putExtra(Intent.EXTRA_TEXT, kagga.toString());
-        PackageManager pm = getPackageManager();
-        if(pm != null){
-            List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
-            if(infos == null){
-                Toast.makeText(this, R.string.warning_no_app, Toast.LENGTH_SHORT).show();
-                return;
+        if(kagga != null) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/*");
+            intent.putExtra(Intent.EXTRA_TEXT, kagga.toString());
+            PackageManager pm = getPackageManager();
+            if (pm != null) {
+                List<ResolveInfo> infos = pm.queryIntentActivities(intent, 0);
+                if (infos == null) {
+                    Toast.makeText(this, R.string.warning_no_app, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                startActivity(Intent.createChooser(intent, getString(R.string.select_app)));
             }
-            startActivity(Intent.createChooser(intent, getString(R.string.select_app)));
         }
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            onBackPressed();
+    public void onPageSelected(int position) {
+        if(mCursor != null) {
+            Kagga kagga = get(position);
+            binding.setKagga(kagga);
         }
-        return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+    
+    private Kagga get(int position){
+        mCursor.moveToPosition(position);
+        String kagga = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_KAGGA));
+        String dividedWords = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_DIVIDED_WORDS));
+        String wordMeanings = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_WORD_MEANINGS));
+        String explanation = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_EXPLANATION));
+        int isFavorite = mCursor.getInt(mCursor.getColumnIndex(DatabaseHelper.COLUMN_FAVORITE));
+        String type = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_TYPE));
+        Kagga k = new Kagga(kagga, dividedWords, wordMeanings, explanation, isFavorite == 1, type);
+        return k;
+    }
+    
+    private class KaggaDetailsAdapter extends PagerAdapter{
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            DetailsBinding detailsBinding = DetailsBinding.inflate(getLayoutInflater());
+            Kagga kagga = get(position);
+            detailsBinding.setKagga(kagga);
+            View v = detailsBinding.getRoot();
+            container.addView(v);
+            return v;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View)object);
+        }
+
+        @Override
+        public int getCount() {
+            return mCursor != null ? mCursor.getCount() : 0;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+    }
 }

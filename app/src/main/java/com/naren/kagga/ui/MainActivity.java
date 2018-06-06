@@ -73,16 +73,23 @@ public class MainActivity extends ListActivity{
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Kagga k = (Kagga)v.getTag();
-        if(k != null){
-            startDetail(k);
+        Intent intent = new Intent(this, KaggaDetailsActivity.class);
+        intent.putExtra(KaggaDetailsActivity.EXTRA_PARAM_IS_MANKUTIMMANA_KAGGA, isMankutimmaSelected);
+        intent.putExtra(KaggaDetailsActivity.EXTRA_PARAM_IS_FAVORITE, mAdapter.isFavorite());
+        String query = "";
+        if(mSearchView != null){
+            query = mSearchView.getQuery().toString();
         }
+        intent.putExtra(KaggaDetailsActivity.EXTRA_PARAM_QUERY, query);
+        intent.putExtra(KaggaDetailsActivity.EXTRA_PARAM_CURSOR_POSITION, position-1);
+        startActivity(intent);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_info){
-           startDetail(null);
+            Intent intent = new Intent(this, InfoActivity.class);
+            startActivity(intent);
         }
         if(item.getItemId() == R.id.menu_favorite){
             boolean isChecked = item.isChecked();

@@ -37,6 +37,10 @@ public class KaggaAdapter extends CursorAdapter implements SearchView.OnQueryTex
         this.favorite = favorite;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
     public Cursor getCursor(String query){
         String value = mActivity.getString(isMankutimmaSelected ? R.string.title_mankutimmana_kagga : R.string.title_marulamuniyana_kagga);
         return DatabaseHelper.searchKaggas(mActivity, favorite, query, value);

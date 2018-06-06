@@ -7,11 +7,11 @@
         android:icon="@drawable/favorite_normal"/>
     <item android:id="@+id/menu_search"
         android:title="@string/title_search"
-        android:icon="@drawable/search"
+        android:icon="@drawable/ic_search"
         android:showAsAction="collapseActionView|always"
         android:actionViewClass="android.widget.SearchView" />
     <item android:id="@+id/menu_info"
         android:title="@string/title_info"
-        android:icon="@drawable/info"
+        android:icon="@drawable/ic_info_outline"
         android:showAsAction="never" />
 </menu>

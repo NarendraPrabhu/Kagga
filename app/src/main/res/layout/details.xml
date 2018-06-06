@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="kagga"
+            type="com.naren.kagga.data.Kagga"/>
+        <import type="com.naren.kagga.TextUtils"/>
+    </data>
+    <com.naren.kagga.ui.ScrollableTextView
+        android:id="@+id/detail"
+        android:gravity="center"
+        android:scrollbars="none"
+        android:requiresFadingEdge="vertical"
+        android:fadingEdgeLength="40dp"
+        android:padding="2dp"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        android:text="@{TextUtils.getText(kagga != null ? String.format(@string/detail_text, kagga.getKagga(), kagga.getDividedWords(), kagga.getWordMeanings(), kagga.getExplanation()) : @string/info_profile)}"
+        android:lineSpacingExtra="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</layout>

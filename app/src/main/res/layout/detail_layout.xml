@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout  xmlns:android="http://schemas.android.com/apk/res/android">
+<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="kagga"
@@ -7,7 +8,9 @@
         <variable
             name="events"
             type="com.naren.kagga.ui.listeners.KaggaDetailEventListener"/>
-        <import type="com.naren.kagga.TextUtils"/>
+        <variable
+            name="adapter"
+            type="android.support.v4.view.PagerAdapter"/>
         <import type="android.view.View"/>
     </data>
     <RelativeLayout
@@ -15,13 +18,12 @@
         android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             android:id="@+id/detail_tools"
-            android:visibility="@{kagga != null ? View.VISIBLE : View.GONE}"
             android:layout_height="wrap_content">
             <ImageButton
                 android:layout_width="35dp"
-                android:src="@drawable/share"
+                android:src="@drawable/ic_share"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:adjustViewBounds="true"
@@ -38,7 +40,7 @@
                 android:layout_height="35dp"/>
             <ImageButton
                 android:layout_width="35dp"
-                android:src="@drawable/copy"
+                android:src="@drawable/ic_content_copy"
                 android:adjustViewBounds="true"
                 android:layout_toStartOf="@id/detail_tools_share"
                 android:background="@android:drawable/menuitem_background"
@@ -62,24 +64,29 @@
                 android:id="@+id/detail_tools_favorite"
                 android:layout_height="35dp" />
         </RelativeLayout>
-        <ScrollView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_above="@id/detail_tools"
-            android:scrollbars="vertical"
-            android:padding="20dp"
+            android:layout_below="@id/detail_tools"
             android:layout_height="match_parent">
-            <TextView
-                android:layout_width="match_parent"
+            <com.naren.kagga.ui.PageIndicatorView
+                android:id="@+id/indicator"
+                android:padding="10dip"
+                android:textSize="12sp"
+                app:count="@{adapter.count}"
                 android:gravity="center"
-                android:padding="2dp"
-                android:textSize="18sp"
-                android:text="@{TextUtils.getText(kagga != null ? String.format(@string/detail_text, kagga.getKagga(), kagga.getDividedWords(), kagga.getWordMeanings(), kagga.getExplanation()) : @string/info_profile)}"
-                android:lineSpacingExtra="3dp"
-                android:id="@+id/detail_kagga"
-                android:layout_height="match_parent">
-                <requestFocus/>
-            </TextView>
-        </ScrollView>
+                android:textStyle="normal"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
+            <android.support.v4.view.ViewPager
+                android:layout_width="match_parent"
+                android:adapter="@{adapter}"
+                android:layout_alignParentTop="true"
+                android:layout_above="@id/indicator"
+                android:id="@+id/kagga_details_pager"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>
 
     </RelativeLayout>
 </layout>
