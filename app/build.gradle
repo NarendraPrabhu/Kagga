@@ -7,7 +7,7 @@ android {
         applicationId "com.naren.kagga"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 8
+        versionCode 9
         versionName "1.0.0.1"
     }
     buildTypes {
