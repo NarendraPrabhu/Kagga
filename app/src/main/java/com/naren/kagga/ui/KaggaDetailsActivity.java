@@ -67,6 +67,7 @@ public class KaggaDetailsActivity extends BaseActivity implements KaggaDetailEve
         pager.addOnPageChangeListener(indicator);
         pager.addOnPageChangeListener(this);
         mCursor = DatabaseHelper.searchKaggas(this, isFavorite, query, value);
+        onPageSelected(currentPosition);
     }
 
     @Override
