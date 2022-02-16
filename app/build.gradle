@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.naren.kagga"
         minSdkVersion 15
-        targetSdkVersion 26
-        versionCode 9
+        targetSdkVersion 31
+        versionCode 10
         versionName "1.0.0.1"
     }
     buildTypes {
