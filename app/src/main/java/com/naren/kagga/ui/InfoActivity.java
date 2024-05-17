@@ -1,7 +1,9 @@
 package com.naren.kagga.ui;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
 
 import com.naren.kagga.R;
 import com.naren.kagga.data.Kagga;

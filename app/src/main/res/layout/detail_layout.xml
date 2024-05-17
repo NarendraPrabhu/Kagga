@@ -10,7 +10,7 @@
             type="com.naren.kagga.ui.listeners.KaggaDetailEventListener"/>
         <variable
             name="adapter"
-            type="android.support.v4.view.PagerAdapter"/>
+            type="androidx.viewpager.widget.PagerAdapter"/>
         <import type="android.view.View"/>
     </data>
     <RelativeLayout
@@ -50,19 +50,23 @@
                 android:layout_centerVertical="true"
                 android:id="@+id/detail_tools_copy"
                 android:layout_height="35dp"/>
+
             <CheckBox
-                android:layout_width="35dp"
-                android:button="@drawable/selector_favorite"
-                android:adjustViewBounds="true"
-                android:layout_toStartOf="@id/detail_tools_copy"
-                android:background="@android:drawable/menuitem_background"
-                android:layout_toLeftOf="@id/detail_tools_copy"
-                android:layout_margin="3dp"
-                android:checked="@={kagga.isFavorite}"
-                android:onCheckedChanged="@{(v,b)->events.check(kagga, b)}"
-                android:layout_centerVertical="true"
                 android:id="@+id/detail_tools_favorite"
-                android:layout_height="35dp" />
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_toStartOf="@id/detail_tools_copy"
+                android:layout_toLeftOf="@id/detail_tools_copy"
+                android:adjustViewBounds="true"
+                android:background="@android:drawable/menuitem_background"
+                android:button="@drawable/selector_favorite"
+                android:checked="@={kagga.isFavorite}"
+                android:onCheckedChanged="@{(v,b)->events.check(kagga, b)}" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -79,7 +83,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content" />
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                 android:layout_width="match_parent"
                 android:adapter="@{adapter}"
                 android:layout_alignParentTop="true"

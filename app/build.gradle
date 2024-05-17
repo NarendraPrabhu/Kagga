@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.naren.kagga"
-        minSdkVersion 15
-        targetSdkVersion 31
-        versionCode 10
-        versionName "1.0.0.1"
+        minSdkVersion 19
+        targetSdkVersion 34
+        versionCode 12
+        versionName "1.0.0.2"
     }
     buildTypes {
         release {
@@ -19,15 +19,19 @@ android {
     dataBinding{
         enabled = true
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    implementation 'commons-io:commons-io:2.4'
+    implementation 'commons-io:commqons-io:2.4'
     implementation 'org.apache.commons:commons-lang3:3.6'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
         transitive = true
     }
-    implementation 'com.google.firebase:firebase-core:11.8.0'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

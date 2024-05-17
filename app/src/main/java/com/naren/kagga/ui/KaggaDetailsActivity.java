@@ -1,5 +1,7 @@
 package com.naren.kagga.ui;
 
+import static com.naren.kagga.db.DatabaseHelper.*;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -8,9 +10,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -66,14 +69,14 @@ public class KaggaDetailsActivity extends BaseActivity implements KaggaDetailEve
         PageIndicatorView indicator = findViewById(R.id.indicator);
         pager.addOnPageChangeListener(indicator);
         pager.addOnPageChangeListener(this);
-        mCursor = DatabaseHelper.searchKaggas(this, isFavorite, query, value);
+        mCursor = searchKaggas(this, isFavorite, query, value);
         onPageSelected(currentPosition);
     }
 
     @Override
     public void check(Kagga kagga, boolean b) {
         if(kagga != null) {
-            DatabaseHelper.setFavorite(this, kagga, b);
+            setFavorite(this, kagga, b);
         }
     }
 
@@ -125,12 +128,12 @@ public class KaggaDetailsActivity extends BaseActivity implements KaggaDetailEve
     
     private Kagga get(int position){
         mCursor.moveToPosition(position);
-        String kagga = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_KAGGA));
-        String dividedWords = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_DIVIDED_WORDS));
-        String wordMeanings = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_WORD_MEANINGS));
-        String explanation = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_EXPLANATION));
-        int isFavorite = mCursor.getInt(mCursor.getColumnIndex(DatabaseHelper.COLUMN_FAVORITE));
-        String type = mCursor.getString(mCursor.getColumnIndex(DatabaseHelper.COLUMN_TYPE));
+        String kagga = mCursor.getString(mCursor.getColumnIndex(COLUMN_KAGGA));
+        String dividedWords = mCursor.getString(mCursor.getColumnIndex(COLUMN_DIVIDED_WORDS));
+        String wordMeanings = mCursor.getString(mCursor.getColumnIndex(COLUMN_WORD_MEANINGS));
+        String explanation = mCursor.getString(mCursor.getColumnIndex(COLUMN_EXPLANATION));
+        int isFavorite = mCursor.getInt(mCursor.getColumnIndex(COLUMN_FAVORITE));
+        String type = mCursor.getString(mCursor.getColumnIndex(COLUMN_TYPE));
         Kagga k = new Kagga(kagga, dividedWords, wordMeanings, explanation, isFavorite == 1, type);
         return k;
     }

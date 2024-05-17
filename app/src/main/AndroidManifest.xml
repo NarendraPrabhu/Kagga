@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.naren.kagga">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.naren.kagga">
 
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
     <application
         android:allowBackup="true"
         android:name=".KaggaApplication"
@@ -11,7 +13,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.MainActivity" android:exported="true" android:screenOrientation="portrait" android:resizeableActivity="false">
+        <activity android:name=".ui.MainActivity" android:exported="true" android:screenOrientation="portrait" android:resizeableActivity="false"
+            tools:ignore="LockedOrientationActivity,NonResizeableActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -19,8 +22,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.KaggaDetailsActivity" android:exported="true" android:screenOrientation="portrait" android:resizeableActivity="false"/>
-        <activity android:name=".ui.InfoActivity" android:exported="true" android:screenOrientation="portrait" android:label="@string/title_info" android:resizeableActivity="false"/>
+        <activity android:name=".ui.KaggaDetailsActivity" android:exported="true" android:screenOrientation="portrait" android:resizeableActivity="false"
+            tools:ignore="LockedOrientationActivity,NonResizeableActivity" />
+        <activity android:name=".ui.InfoActivity" android:exported="true" android:screenOrientation="portrait" android:label="@string/title_info" android:resizeableActivity="false"
+            tools:ignore="LockedOrientationActivity,NonResizeableActivity" />
 
     </application>
 

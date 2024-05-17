@@ -1,7 +1,7 @@
 package com.naren.kagga.ui;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.widget.TextView;

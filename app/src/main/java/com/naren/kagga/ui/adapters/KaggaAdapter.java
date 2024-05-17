@@ -3,15 +3,14 @@ package com.naren.kagga.ui.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.databinding.DataBindingUtil;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
 import android.widget.CursorAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.SearchView;
-import android.widget.TextView;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.naren.kagga.R;
 import com.naren.kagga.data.Kagga;
